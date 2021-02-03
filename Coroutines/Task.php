@@ -1,6 +1,8 @@
 <?php
 namespace Coroutines;
-
+/**
+ * 任务
+ */
 use Generator;
 
 class Task {

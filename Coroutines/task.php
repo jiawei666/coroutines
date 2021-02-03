@@ -2,6 +2,8 @@
 
 require_once '../vendor/autoload.php';
 
+use Coroutines\Scheduler;
+
 function task1() {
     for ($i = 1; $i <= 10; ++$i) {
         echo "This is task 1 iteration $i.\n";
@@ -14,7 +16,8 @@ function task2() {
         yield;
     }
 }
-$scheduler = new \Coroutines\Scheduler();
+
+$scheduler = new Scheduler();
 $scheduler->newTask(task1());
 $scheduler->newTask(task2());
 $scheduler->run();

@@ -15,6 +15,7 @@
 
 function gen()
 {
+    var_dump('123');
     $ret = yield  'yield1';
     var_dump("var_dump1: $ret");
     $ret = yield 'yield2';
@@ -23,9 +24,9 @@ function gen()
 
 $gen = gen();
 var_dump($gen->send('12312'));
-var_dump($gen->valid());
-var_dump($gen->send('333'));
-var_dump($gen->valid());
+//var_dump($gen->valid());
+//var_dump($gen->send('333'));
+//var_dump($gen->valid());
 
 //var_dump("cur1:" . $gen->current());
 //$gen->next();
