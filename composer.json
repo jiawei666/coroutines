@@ -1,0 +1,17 @@
+{
+    "name": "yuanjw/coroutines",
+    "description": "PHP Coroutines Implement Demo",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "jiawei666",
+            "email": "957089263@qq.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "": ""
+        }
+    },
+    "require": {}
+}
