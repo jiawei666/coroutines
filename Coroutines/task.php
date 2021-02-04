@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * 简单任务调度
+ */
+
 require_once '../vendor/autoload.php';
 
 use Coroutines\Scheduler;

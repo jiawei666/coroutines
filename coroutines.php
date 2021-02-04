@@ -18,12 +18,13 @@ function gen()
     var_dump('123');
     $ret = yield  'yield1';
     var_dump("var_dump1: $ret");
-    $ret = yield 'yield2';
-    var_dump("var_dump2: $ret");
+//    $ret = yield 'yield2';
+//    var_dump("var_dump2: $ret");
 }
 
 $gen = gen();
-var_dump($gen->send('12312'));
+var_dump($gen->current());
+var_dump($gen->send('send'));
 //var_dump($gen->valid());
 //var_dump($gen->send('333'));
 //var_dump($gen->valid());
