@@ -32,9 +32,10 @@ class Scheduler {
     }
 
     public function run() {
-        $this->newTask($this->ioPollTask());
         while (!$this->taskQueue->isEmpty()) {
+//            var_dump('队列任务总数：' . $this->taskQueue->count());
             $task = $this->taskQueue->dequeue();
+//            var_dump('当前任务id:' . $task->taskId);
             $retval = $task->run();
             if ($retval instanceof SystemCall) {
                 $retval($task, $this);
@@ -80,6 +81,7 @@ class Scheduler {
     }
 
     protected function ioPoll($timeout) {
+        var_dump('111');
         $rSocks = [];
         foreach ($this->waitingForRead as list($socket)) {
             $rSocks[] = $socket;
@@ -89,13 +91,18 @@ class Scheduler {
             $wSocks[] = $socket;
         }
         $eSocks = []; // dummy
+
+        // 流选择函数(stream_select)，会保留那些状态改变了的数组元素，直等到某个套接口准备就绪，才会继续运行后面的代码
         if (!stream_select($rSocks, $wSocks, $eSocks, $timeout)) {
+            var_dump('return');
             return;
         }
+        var_dump('通过');
         foreach ($rSocks as $socket) {
             list(, $tasks) = $this->waitingForRead[(int) $socket];
             unset($this->waitingForRead[(int) $socket]);
             foreach ($tasks as $task) {
+                var_dump('增加任务r');
                 $this->schedule($task);
             }
         }
@@ -103,12 +110,13 @@ class Scheduler {
             list(, $tasks) = $this->waitingForWrite[(int) $socket];
             unset($this->waitingForWrite[(int) $socket]);
             foreach ($tasks as $task) {
+                var_dump('增加任务w');
                 $this->schedule($task);
             }
         }
     }
 
-    protected function ioPollTask() {
+    public function ioPollTask() {
         while (true) {
             if ($this->taskQueue->isEmpty()) {
                 $this->ioPoll(null);

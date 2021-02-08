@@ -1,27 +1,40 @@
 <?php
-
+namespace Coroutines;
 /**
- * 简单任务调度
+ * 任务
  */
+use Generator;
 
-require_once '../vendor/autoload.php';
+class Task {
+    public $taskId;
+    protected $coroutine;
+    protected $sendValue = null;
+    protected $beforeFirstYield = true;
+    public function __construct($taskId, Generator $coroutine) {
+        $this->taskId = $taskId;
+        $this->coroutine = $coroutine;
+    }
 
-use Coroutines\Scheduler;
+    public function getTaskId() {
+        return $this->taskId;
+    }
 
-function task1() {
-    for ($i = 1; $i <= 10; ++$i) {
-        echo "This is task 1 iteration $i.\n";
-        yield;
+    public function setSendValue($sendValue) {
+        $this->sendValue = $sendValue;
+    }
+
+    public function run() {
+        if ($this->beforeFirstYield) {
+            $this->beforeFirstYield = false;
+            return $this->coroutine->current();
+        } else {
+            $retval = $this->coroutine->send($this->sendValue);
+            $this->sendValue = null;
+            return $retval;
+        }
+    }
+
+    public function isFinished() {
+        return !$this->coroutine->valid();
     }
 }
-function task2() {
-    for ($i = 1; $i <= 5; ++$i) {
-        echo "This is task 2 iteration $i.\n";
-        yield;
-    }
-}
-
-$scheduler = new Scheduler();
-$scheduler->newTask(task1());
-$scheduler->newTask(task2());
-$scheduler->run();

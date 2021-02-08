@@ -62,7 +62,7 @@ function waitForWrite($socket) {
 
 function server($port) {
     echo "Starting server at port $port...\n";
-    $socket = @stream_socket_server("tcp://localhost:$port", $errNo, $errStr);
+    $socket = @stream_socket_server("tcp://0.0.0.0:$port", $errNo, $errStr);
     if (!$socket) throw new Exception($errStr, $errNo);
     stream_set_blocking($socket, 0);
     while (true) {
@@ -90,4 +90,5 @@ RES;
 }
 $scheduler = new Scheduler;
 $scheduler->newTask(server(8000));
+$scheduler->newTask($scheduler->ioPollTask());
 $scheduler->run();
